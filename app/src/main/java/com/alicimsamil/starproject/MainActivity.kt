@@ -18,8 +18,5 @@ class MainActivity : AppCompatActivity() {
 
         // Attach the SkyWebView to the lifecycle of the activity
         lifecycle.addObserver(skyWebView)
-
-        // Add a small star to the SkyWebView upon activity creation
-        skyWebView.addStarInterface(StarSize.Small)
     }
 }
