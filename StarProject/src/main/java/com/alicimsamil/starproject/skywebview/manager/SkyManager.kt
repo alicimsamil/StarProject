@@ -1,10 +1,14 @@
 package com.alicimsamil.starproject.skywebview.manager
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.alicimsamil.starproject.skywebview.model.Star
 import com.alicimsamil.starproject.skywebview.model.StarBrightness
 import com.alicimsamil.starproject.skywebview.model.StarSize
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -15,8 +19,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 internal object SkyManager {
     private const val MAX_STARS = 10
-    internal val stars = arrayListOf<Star>()
+    internal var stars = arrayListOf<Star>()
     internal val isSkyFull = MutableStateFlow(false)
+    private var sharedPref : SharedPreferences? = null
+    private const val SAVED_STARS = "SAVED_STARS"
+    private val gson = Gson()
 
     /**
      * Function used to add a star.
@@ -45,11 +52,12 @@ internal object SkyManager {
      * Function used to log all stars.
      */
     private fun logAllStars() {
+        val isStarsNotEmpty = stars.isNotEmpty()
         val concatenatedMessage = stars.joinToString(", ") { star ->
             "Star(Size: ${star.size.value}, Color: ${star.color.value}, Brightness: ${star.brightness.value})"
         }
-        Log.d("Stars: ", concatenatedMessage)
-        Log.d("Bright Stars: ", stars.count { star -> star.brightness == StarBrightness.Bright }.toString())
+        Log.d("Stars: ", if (isStarsNotEmpty) concatenatedMessage else "List is empty.")
+        Log.d("Bright Stars: ", if (isStarsNotEmpty) stars.count { star -> star.brightness == StarBrightness.Bright }.toString() else "List is empty.")
     }
 
     /**
@@ -69,5 +77,38 @@ internal object SkyManager {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun validateCheckStarListSize() : Boolean{
         return checkStarListSize()
+    }
+
+    /**
+     * Initializes the shared preferences for the library.
+     * @param context The context used to obtain the shared preferences.
+     */
+    internal fun initSharedPref(context: Context?){
+        sharedPref = context?.getSharedPreferences(context.packageName ,Context.MODE_PRIVATE) ?: return
+    }
+
+    /**
+     * Saves the 'stars' data to local storage using SharedPreferences.
+     * Converts the 'stars' data to JSON format before saving.
+     */
+    internal fun saveStarsToLocal(){
+        val starsJsonFormat = gson.toJson(stars)
+        sharedPref?.edit()?.apply {
+            putString(SAVED_STARS, starsJsonFormat)
+            apply()
+        }
+    }
+
+    /**
+     * Retrieves the 'stars' data from local storage using SharedPreferences.
+     * Converts the stored JSON-formatted data back into a list of 'Star' objects.
+     */
+    internal fun getStarsFromLocal(){
+        val starsJsonFormat =sharedPref?.getString(SAVED_STARS, "")
+        val type = object : TypeToken<ArrayList<Star>>() {}.type
+        val starList : ArrayList<Star>? = gson.fromJson(starsJsonFormat, type)
+        starList?.let {
+            stars = starList
+        }
     }
 }
