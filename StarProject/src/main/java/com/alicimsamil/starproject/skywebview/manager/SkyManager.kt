@@ -45,7 +45,10 @@ internal object SkyManager {
      * Function used to log all stars.
      */
     private fun logAllStars() {
-        Log.d("Stars: ", stars.joinToString(", "))
+        val concatenatedMessage = stars.joinToString(", ") { star ->
+            "Star(Size: ${star.size.value}, Color: ${star.color.value}, Brightness: ${star.brightness.value})"
+        }
+        Log.d("Stars: ", concatenatedMessage)
         Log.d("Bright Stars: ", stars.count { star -> star.brightness == StarBrightness.Bright }.toString())
     }
 
