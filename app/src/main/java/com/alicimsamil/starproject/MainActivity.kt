@@ -3,7 +3,6 @@ package com.alicimsamil.starproject
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.alicimsamil.starproject.skywebview.SkyWebView
-import com.alicimsamil.starproject.skywebview.model.StarSize
 
 class MainActivity : AppCompatActivity() {
 
