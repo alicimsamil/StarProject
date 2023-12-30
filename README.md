@@ -11,6 +11,9 @@ This custom view includes a WebView to display an image of the sky, buttons for 
 - **Small Star Button:** Adds small stars to the sky.
 - **Big Star Button:** Adds big stars to the sky.
 - **Reset Button:** Resets the state of the stars in the sky.
+- **Local Data Management:** The SkyWebView custom WebView utilizes `SharedPreferences` to locally store the list of stars. This ensures that the star information persists across app sessions
+- **Unit Test:** The SkyWebView custom WebView comes with a comprehensive set of unit tests to ensure the stability and correctness of its functionality. These tests cover various scenarios, including the handling of star additions, resets, and the management of the local star list.
+
 
 ## Usage
 
