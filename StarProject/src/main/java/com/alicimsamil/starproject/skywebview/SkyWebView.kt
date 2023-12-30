@@ -157,8 +157,8 @@ class SkyWebView @JvmOverloads constructor(
      * Initiates necessary operations, such as initializing shared preferences, retrieving stars from local storage,
      * and setting up a listener to monitor the sky's state asynchronously.
      */
-    override fun onCreate(owner: LifecycleOwner)  {
-        super.onStart(owner)
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
         skyManager.initSharedPref(context)
         skyManager.getStarsFromLocal()
         owner.lifecycleScope.launch {
